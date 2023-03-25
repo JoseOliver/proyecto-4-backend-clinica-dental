@@ -73,23 +73,20 @@ Tecnologías utilizadas:
 ## Instalación en local
 
 1. Clonar el repositorio
-2. ` $ npm install `
-3. Conectamos nuestro repositorio con la base de datos 
-4. ``` $ Ejecutamos las migraciones ``` 
-5. ``` $ Ejecutamos los seeders ``` 
-6. ``` $ npm run dev ``` 
-7. ...
+2. ` npm install ` Instalamos dependencias  
+3. ` npm run create ` Preparamos la base de datos para atacarla con la app  
+4. ` npm run dev ` Dejamos la app preparada y escuchando las requests
 
 ## Workflow
 <details>
-<summary>Workflow</summary>
+<summary>Project Workflow</summary>
 
 1. Crear package.json con npm init -y.
 2. Crear archivo index.js en la ruta principal. Crear .env y .env.example. Crear .gitignore con /node_modules y .env dentro. Ejecutar comando git init. 
 3. Instalar express, nodemon, sequelize, sequelize-cli, mysql2, dotenv, jsonwebtoken y bcrypt. 
 4. Sequelize init. Ejecutar sequelize.
 5. Crear script "dev": "nodemon index.js", para mantener el servidor ejecutándose.
-6. ``` $ npm run dev ``` comando para ejecutar el servidor. ctrl + c para pararlo.
+6. ` $ npm run dev ` comando para ejecutar el servidor. ctrl + c para pararlo.
 7. Required express en index.js, y la variable instance app. También asignar PORT a nuestro servidor y usar un método listen para ejecutarlo:
 ```
 const express = require('express');
@@ -139,9 +136,9 @@ serviceController.createServices = (req, res) => {return res.send('Create Servic
 
 module.exports = serviceController;
 ```
-15. Crear seeders para Role, User, Doctor, Service, Appointment y  commit a la database
+15. Crear seeders para Role, User, Doctor, Service, Appointment
 ```
-npx sequelize-cli seed:generate --name demo-user
+npx sequelize-cli seed:generate --name User
 npx sequelize-cli db:seed:all
 ```
 16. Crear middlewares para controlar el nivel de acceso a la información o a las funcionalidades de la base de datos según roles.
@@ -152,13 +149,12 @@ npx sequelize-cli db:seed:all
 <details>
 <summary>Endpoints</summary>
 
-- AUTH
-    - REGISTRO DE USUARIOS
-
-            POST http://localhost:3000/auth/register/
+- AUTH  
+    - REGISTRO DE USUARIOS  
+    Te permite registrar nuevos usuarios  
+        POST http://localhost:3000/auth/register/  
         body:
         ``` js
-            
           {
             "name":"Ramón",
             "first_surname":"Folguera",
@@ -169,10 +165,9 @@ npx sequelize-cli db:seed:all
             "password": "mipassword123"
           }
         ```
-
-    - LOGIN DE USUARIOS
-
-            POST http://localhost:3000/auth/login/  
+    - LOGIN DE USUARIOS  
+    Te permite hacer login con tu usuario y tu pass  
+        POST http://localhost:3000/auth/login/  
         body:
         ``` js
             {
@@ -180,70 +175,50 @@ npx sequelize-cli db:seed:all
                 "password": "mipassword123"
             }
         ```
-- USER
-    - PERFIL DE USUARIO 
-
-        Copia el TOKEN generado por el AUTH del LOGIN:
-
-
-        ```
-            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjMsImVtYWlsIjoiYW1wYXJvQGFtcGFyby5jb20iLCJyb2xlSWQiOjMsImlhdCI6MTY3ODAwNzMzNSwiZXhwIjoxNjc4MDE0NTM1fQ.4K6BNC2bhhrW_vyCQh7hiWI2-i-c4C-KOOgo0nHeQOg"
-        ```
-
-        En AUTHORIZATION. Type BEARER TOKEN. Pega el TOKEN generado.
-
-            GET http://localhost:3000/users/me
-
-        
-
-    - MODIFICACIÓN DE DATOS DE PERFIL
-
-        Copia el TOKEN generado por el AUTH del LOGIN:
-
-        ```
-            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjMsImVtYWlsIjoiYW1wYXJvQGFtcGFyby5jb20iLCJyb2xlSWQiOjMsImlhdCI6MTY3ODAwNzMzNSwiZXhwIjoxNjc4MDE0NTM1fQ.4K6BNC2bhhrW_vyCQh7hiWI2-i-c4C-KOOgo0nHeQOg"
-        ```
-
-        En AUTHORIZATION. Type BEARER TOKEN. Pega el TOKEN generado.
-
-            PUT http://localhost:3000/users/me
+- USER  
+    - PERFIL DE USUARIO  
+        - AUTENTIFICACIÓN COMO USUARIO  
+            Copia el TOKEN generado por el AUTH del LOGIN. Utiliza este USER como ejemplo:
+            ``` js
+                {
+                    "email": "ramon@ramon.com",
+                    "password": "mipassword123"
+                }
+            ```
+            En AUTHORIZATION. Type BEARER TOKEN. Pega el TOKEN generado.  
+        - AUTENTIFICACIÓN COMO DOCTOR:  
+            Copia el TOKEN generado por el AUTH del LOGIN. Utiliza este USER con privilegios de DOCTOR como ejemplo:
+            ``` js
+                {
+                "email":"amparo@amparo.com",
+                "password": "456789"
+                }
+            ```
+            En AUTHORIZATION. Type BEARER TOKEN. Pega el TOKEN generado.  
+    - CRUD Usuarios  
+        - Get  
+        GET http://localhost:3000/users/me
+        Obtiene tu perfil de usuario
+        - Update  
+        PUT http://localhost:3000/users/me
+        Actualiza tu perfil de usuario pasando los cambios dentro de changes  
         body:
         ``` js
             {
-                "attribute":"name",
-                "value":"Rodrigo",
                 "changes":{
                     "name": "Francisco",
                     "first_surname": "Martínez"
                     }
             }
         ```
-
-    - VER TODAS LOS CLIENTES REGISTRADOS (COMO DENTISTA)
-
-        LOGIN con USER con role de DOCTOR:
-
-        body:
-        ``` js
-            {
-              "email":"amparo@amparo.com",
-              "password": "456789"
-            }
-        ```
-
-        Copia el TOKEN generado por el AUTH del LOGIN:
-
-        ```
-            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjMsImVtYWlsIjoiYW1wYXJvQGFtcGFyby5jb20iLCJyb2xlSWQiOjMsImlhdCI6MTY3ODAwNzMzNSwiZXhwIjoxNjc4MDE0NTM1fQ.4K6BNC2bhhrW_vyCQh7hiWI2-i-c4C-KOOgo0nHeQOg"
-        ```
-
-        En AUTHORIZATION. Type BEARER TOKEN. Pega el TOKEN generado.
-
+        - Get All (Medic)
         GET  http://localhost:3000/users
+        Obtiene todos los usuarios solo si tienes privilegios de Médico
 - APPOINTMENT
-    - CREACIÓN DE CITAS
-
-            POST http://localhost:3000/appointments/
+    - CRUD Citas  
+        - Create (User)  
+        POST http://localhost:3000/appointments/
+        El cliente crea una cita en estado Pendiente de Verificar por el doctor.  
         body:
         ``` js
             {
@@ -252,20 +227,9 @@ npx sequelize-cli db:seed:all
                 "doctor_id":1
             }
         ```
-
-        El cliente crea una cita en estado Pendiente de Verificar por el doctor.
-
-    - MODIFICACIÓN DE CITAS
-
-        Copia el TOKEN generado por el AUTH del LOGIN:
-
-        ```
-            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjMsImVtYWlsIjoiYW1wYXJvQGFtcGFyby5jb20iLCJyb2xlSWQiOjMsImlhdCI6MTY3ODAwNzMzNSwiZXhwIjoxNjc4MDE0NTM1fQ.4K6BNC2bhhrW_vyCQh7hiWI2-i-c4C-KOOgo0nHeQOg"
-        ```
-
-        En AUTHORIZATION. Type BEARER TOKEN. Pega el TOKEN generado.
-
-            PUT http://localhost:3000/appointments
+        - Update (User)  
+        PUT http://localhost:3000/appointments
+        El cliente actualiza los datos de la cita y reestablece su verificación a estado pendiente  
         body:
         ``` js
             {
@@ -275,163 +239,45 @@ npx sequelize-cli db:seed:all
                 }
             }
         ```
-
-    - ANULACIÓN DE CITAS 
-
-        Copia el TOKEN generado por el AUTH del LOGIN:
-
-        ```
-            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjMsImVtYWlsIjoiYW1wYXJvQGFtcGFyby5jb20iLCJyb2xlSWQiOjMsImlhdCI6MTY3ODAwNzMzNSwiZXhwIjoxNjc4MDE0NTM1fQ.4K6BNC2bhhrW_vyCQh7hiWI2-i-c4C-KOOgo0nHeQOg"
-        ```
-
-        En AUTHORIZATION. Type BEARER TOKEN. Pega el TOKEN generado.
-
-            DELETE http://localhost:3000/appointments
+        - Delete (User)  
+        DELETE http://localhost:3000/appointments
+        El cliente borra una de sus citas  
         body:
         ``` js
             {
                 "id":"7"
             }
         ```
-
-    - VER TODAS LAS CITAS QUE TENGO COMO CLIENTE (SOLO LAS PROPIAS) 
-
-        Copia el TOKEN generado por el AUTH del LOGIN:
-
-        ```
-            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjMsImVtYWlsIjoiYW1wYXJvQGFtcGFyby5jb20iLCJyb2xlSWQiOjMsImlhdCI6MTY3ODAwNzMzNSwiZXhwIjoxNjc4MDE0NTM1fQ.4K6BNC2bhhrW_vyCQh7hiWI2-i-c4C-KOOgo0nHeQOg"
-        ```
-
-        En AUTHORIZATION. Type BEARER TOKEN. Pega el TOKEN generado.
-
+        - Get All mine (User)  
             GET http://localhost:3000/appointments/user
-    
-    - VER TODAS LAS CITAS EXISTENTES (COMO DENTISTA) 
-
-        LOGIN con USER con role de DOCTOR:
-
-        body:
-        ``` js
-            {
-              "email":"amparo@amparo.com",
-              "password": "456789"
-            }
-        ```
-
-        Copia el TOKEN generado por el AUTH del LOGIN:
-
-        ```
-            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjMsImVtYWlsIjoiYW1wYXJvQGFtcGFyby5jb20iLCJyb2xlSWQiOjMsImlhdCI6MTY3ODAwNzMzNSwiZXhwIjoxNjc4MDE0NTM1fQ.4K6BNC2bhhrW_vyCQh7hiWI2-i-c4C-KOOgo0nHeQOg"
-        ```
-
-        En AUTHORIZATION. Type BEARER TOKEN. Pega el TOKEN generado.
-
-            GET  http://localhost:3000/appointments/doctor
-
-
-    - COMO MÉDICO, PODER VER SOLO MIS CITAS
-
-        LOGIN con USER con role de DOCTOR:
-
-        body:
-        ``` js
-            {
-              "email":"amparo@amparo.com",
-              "password": "456789"
-            }
-        ```
-
-        Copia el TOKEN generado por el AUTH del LOGIN:
-
-        ```
-            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjMsImVtYWlsIjoiYW1wYXJvQGFtcGFyby5jb20iLCJyb2xlSWQiOjMsImlhdCI6MTY3ODAwNzMzNSwiZXhwIjoxNjc4MDE0NTM1fQ.4K6BNC2bhhrW_vyCQh7hiWI2-i-c4C-KOOgo0nHeQOg"
-        ```
-
-        En AUTHORIZATION. Type BEARER TOKEN. Pega el TOKEN generado.
-
+            El cliente revisa los datos de todas sus citas
+        - Get All Mine (Medic)  
             GET  http://localhost:3000/appointments/doctor/my
-
-    - CONSULTAR CITAS DE UN DOCTOR SIN VERIFICAR
-
-        LOGIN con USER con role de DOCTOR:
-
-        body:
-        ``` js
-            {
-              "email":"amparo@amparo.com",
-              "password": "456789"
-            }
-        ```
-
-        Copia el TOKEN generado por el AUTH del LOGIN:
-
-        ```
-            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjMsImVtYWlsIjoiYW1wYXJvQGFtcGFyby5jb20iLCJyb2xlSWQiOjMsImlhdCI6MTY3ODAwNzMzNSwiZXhwIjoxNjc4MDE0NTM1fQ.4K6BNC2bhhrW_vyCQh7hiWI2-i-c4C-KOOgo0nHeQOg"
-        ```
-
-        En AUTHORIZATION. Type BEARER TOKEN. Pega el TOKEN generado.
-
-            GET  http://localhost:3000/appointments/doctor/my-verified
-
-    - VERIFICAR CITA COMO DOCTOR
-
-        LOGIN con USER con role de DOCTOR:
-
-        body:
-        ``` js
-            {
-              "email":"amparo@amparo.com",
-              "password": "456789"
-            }
-        ```
-
-        Copia el TOKEN generado por el AUTH del LOGIN:
-
-        ```
-            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjMsImVtYWlsIjoiYW1wYXJvQGFtcGFyby5jb20iLCJyb2xlSWQiOjMsImlhdCI6MTY3ODAwNzMzNSwiZXhwIjoxNjc4MDE0NTM1fQ.4K6BNC2bhhrW_vyCQh7hiWI2-i-c4C-KOOgo0nHeQOg"
-        ```
-
-        En AUTHORIZATION. Type BEARER TOKEN. Pega el TOKEN generado.
-
+            El doctor revisa los datos de todas sus citas como doctor
+        - Get All (Medic)  
+            GET  http://localhost:3000/appointments/doctor
+            El doctor obtiene todos los datos de todas las citas del sistema
+        - Verify (Medic)  
             PUT  http://localhost:3000/appointments/verify
-
-          body:
+            El doctor verifica una cita, esa cita pasa a estar verificada  
+        body:
         ``` js
             {
-              "email":"amparo@amparo.com",
-              "password": "456789"
+                "id":5,
+                "comments":"must"
             }
         ```
-        
 </details>
 
 ## Futuras funcionalidades
-[ ] Añadir un rol SuperAdmin que sea el rol del programador con acceso a todo el sistema menos a los datos privados de los pacientes y doctores.
-[ ] Añadir funcionalidades para crear, modificar y eliminar servicios por los doctores.  
-[ ] Añadir funcionalidades para crear, modificar o eliminar roles por el SuperAdmin
-[ ] Especificar que el rol admin será para administración desde recepción con los privilegios necesarios para llevar a cabo su trabajo, como por ejemplo (añadido en el siguiente punto):
-[ ] Añadir funcionalidad para crear, modificar y eliminar doctores.
++ Añadir un rol SuperAdmin que sea el rol del programador con acceso a todo el sistema menos a los datos privados de los pacientes y doctores.
++ Añadir funcionalidades para crear, modificar y eliminar servicios por los doctores.  
++ Añadir funcionalidades para crear, modificar o eliminar roles por el SuperAdmin
++ Especificar que el rol admin será para administración desde recepción con los privilegios necesarios para llevar a cabo su trabajo, como por ejemplo (añadido en el siguiente punto):
++ Añadir funcionalidad para crear, modificar y eliminar doctores.
 
 ## Contribuciones
 Las sugerencias y aportaciones son siempre bienvenidas.  
-
-Puedes hacerlo de dos maneras:
-
-1. Abriendo una issue
-2. Crea un fork del repositorio
-    - Crea una nueva rama  
-        ```
-        $ git checkout -b feature/nombreUsuario-mejora
-        ```
-    - Haz un commit con tus cambios 
-        ```
-        $ git commit -m 'feat: mejora X cosa'
-        ```
-    - Haz push a la rama 
-        ```
-        $ git push origin feature/nombreUsuario-mejora
-        ```
-    - Abre una solicitud de Pull Request
 
 ## Licencia
 Este proyecto se encuentra bajo licencia de [MIT License](https://github.com/RamonFolguera/rfc-jaoa-geekshubs-fsd-val-project4-05032023/blob/master/LICENSE).
@@ -439,7 +285,6 @@ Este proyecto se encuentra bajo licencia de [MIT License](https://github.com/Ram
 ## Webgrafia:
 Para conseguir mi objetivo hemos recopilado información de:
 - [Sequelize documentation](https://sequelize.org/docs/v6/)
-
 
 ## Desarrollo:
 
@@ -449,21 +294,20 @@ Para conseguir mi objetivo hemos recopilado información de:
 
 Proyecto realizado por:
 
-- **Ramón**
+- **Ramón**  
 <a href="https://github.com/RamonFolguera" target="_blank"><img src="https://img.shields.io/badge/github-24292F?style=for-the-badge&logo=github&logoColor=white" target="_blank"></a>
 
 - **Jose**  
-<a href="https://github.com/JoseOliver" target="_blank"><img src="https://img.shields.io/badge/github-24292F?style=for-the-badge&logo=github&logoColor=red" target="_blank"></a>
-
-##Contacto
-- **Ramón**
+<a href="https://github.com/JoseOliver" target="_blank"><img src="https://img.shields.io/badge/github-24292F?style=for-the-badge&logo=github&logoColor=white" target="_blank"></a>
+## Contacto
+- **Ramón**  
 <a href = "mailto:folguera.ramon@gmail.com"><img src="https://img.shields.io/badge/Gmail-C6362C?style=for-the-badge&logo=gmail&logoColor=white" target="_blank"></a>
 <a href="https://www.linkedin.com/in/ram%C3%B3n-folguera-0ab32776/" target="_blank"><img src="https://img.shields.io/badge/-LinkedIn-%230077B5?style=for-the-badge&logo=linkedin&logoColor=white" target="_blank"></a> 
 </p>
 
-- **Jose**
-<a href = "mailto:micorreoelectronico@gmail.com"><img src="https://img.shields.io/badge/Gmail-C6362C?style=for-the-badge&logo=gmail&logoColor=white" target="_blank"></a>
-<a href="https://www.linkedin.com/in/linkedinUser/" target="_blank"><img src="https://img.shields.io/badge/-LinkedIn-%230077B5?style=for-the-badge&logo=linkedin&logoColor=white" target="_blank"></a> 
+- **Jose**  
+<a href = "mailto:olikver_ja@outlook.com"><img src="https://img.shields.io/badge/Gmail-C6362C?style=for-the-badge&logo=gmail&logoColor=white" target="_blank"></a>
+<a href="https://www.linkedin.com/in/joseoliver1/" target="_blank"><img src="https://img.shields.io/badge/-LinkedIn-%230077B5?style=for-the-badge&logo=linkedin&logoColor=white" target="_blank"></a> 
 </p>
 
 
