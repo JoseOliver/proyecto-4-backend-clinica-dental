@@ -15,6 +15,8 @@ router.put("/me", verifyToken, verifyUserChanges, userController.updateMyUser);
 
 //Extras
 router.get("/admin", verifyToken, isAdmin, userController.getAllUsersAsAdmin);
+router.get("/my/medics", verifyToken, userController.getMyMedics);
+router.get("/my/services", verifyToken, userController.getMyServices);
 
 //export router so it can be imported from other files once it is executed 
 module.exports = router;

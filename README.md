@@ -1,5 +1,7 @@
 # Proyecto 4 - Backend para una clínica dental
 
+Version deploy remote del proyecto 4, para revisar el proyecto en local visitar el repositorio <a href="https://github.com/JoseOliver/proyecto-4-backend-clinica-dental">Proyecto 4: clinica dental database local</a>
+
 <details>
   <summary>Contenido 📝</summary>
   <ol>
