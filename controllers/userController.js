@@ -131,6 +131,20 @@ userController.getMyDoctors= async (req, res) => {
     }
 }
 userController.getMyServices= async (req, res) => {
-
+try{
+        const services = await Service.findAll();
+        return res.json(
+            {
+            success: true,
+            message: "All your services retrieved",
+            data: services
+            });
+    } catch (error){
+        return res.status(500).json({
+            success: false,
+            message: "Somenthing went wrong trying to get my services",
+            error: error.message
+        })
+    }
 }
 module.exports = userController;
