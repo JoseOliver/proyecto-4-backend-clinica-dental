@@ -1,4 +1,4 @@
-const { User, Medic, Service } = require("../models");
+const { User, Doctor, Service } = require("../models");
 
 const userController = {};
 
@@ -101,15 +101,15 @@ userController.getAllUsersAsAdmin = async (req, res) => {
     }
 }
 
-userController.getMyMedics= async (req, res) => {
+userController.getMyDoctors= async (req, res) => {
     try{
-        const medicUsers = [];
-        const medics = await Medic.findAll();
-        for(let medic of medics){
-            medicUsers += await User.findAll(
+        const doctorUsers = [];
+        const doctors = await Doctor.findAll();
+        for(let doctor of doctors){
+            doctorUsers += await User.findAll(
                 {
                     where:{
-                        id : medic.id
+                        id : doctor.id
                     },
                 attributes: {
                     exclude: ["password", "createdAt","updatedAt", "role_id"],
@@ -120,7 +120,7 @@ userController.getMyMedics= async (req, res) => {
             {
             success: true,
             message: "All your doctors retrieved",
-            data: medicUsers
+            data: doctorUsers
             });
     } catch (error){
         return res.status(500).json({
