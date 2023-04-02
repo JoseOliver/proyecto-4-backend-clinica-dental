@@ -106,7 +106,7 @@ userController.getMyDoctors= async (req, res) => {
         let doctorUsers = [];
         const doctors = await Doctor.findAll();
         for(let doctor of doctors){
-            doctorUsers.push( await User.findAll(
+            doctorUsers.push( await User.findOne(
                 {
                     where:{
                         id : doctor.user_id
