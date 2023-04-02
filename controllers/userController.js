@@ -103,7 +103,7 @@ userController.getAllUsersAsAdmin = async (req, res) => {
 
 userController.getMyDoctors= async (req, res) => {
     try{
-        const doctorUsers = [];
+        let doctorUsers = [];
         const doctors = await Doctor.findAll();
         for(let doctor of doctors){
             doctorUsers += await User.findAll(
