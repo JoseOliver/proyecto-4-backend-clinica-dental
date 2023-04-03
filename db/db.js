@@ -1,6 +1,7 @@
 const dotenv = require('dotenv');
 dotenv.config();
 const {Sequelize, DataTypes} = require('sequelize');
+console.log(process.env.MYSQL_HOST)
 const sequelize = new Sequelize(
     process.env.MYSQL_DATABASE, 
     process.env.MYSQL_USERNAME, 
