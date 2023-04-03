@@ -106,7 +106,7 @@ userController.getMyDoctors= async (req, res) => {
         let doctorUsers = [];
         const doctors = await Doctor.findAll();
         for(let doctor of doctors){
-            doctorUsers.push( await User.findOne(
+            let user=  await User.findOne(
                 {
                     where:{
                         id : doctor.user_id
@@ -114,8 +114,11 @@ userController.getMyDoctors= async (req, res) => {
                 attributes: {
                     exclude: ["password", "createdAt","updatedAt", "role_id","phone", "email", "address"],
                 }
-            }));
+            });
+            user.doctor_id= doctor.id;
+            doctorUsers.push(user);
         }
+        
         return res.json(
             {
             success: true,
