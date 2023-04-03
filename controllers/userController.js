@@ -115,8 +115,14 @@ userController.getMyDoctors= async (req, res) => {
                     exclude: ["password", "createdAt","updatedAt", "role_id","phone", "email", "address"],
                 }
             });
-            user.doctor_id= doctor.id;
-            doctorUsers.push(user);
+            let userSent = {
+                id: user.id,
+                name: user.name,
+                first_surname: user.first_surname,
+                second_surname: user.second_surname,
+                doctor_id: doctor.id
+            };
+            doctorUsers.push(userSent);
         }
         
         return res.json(
